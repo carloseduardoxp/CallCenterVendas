@@ -13,3 +13,13 @@ CREATE TABLE TB_FORNECEDOR (
 );
 
 -- insert into tb_fornecedor values (1,'Alpargatas','alpartagas@teste.com','alpargatas havaiana','111');
+
+
+CREATE TABLE TB_CLIENTE (
+	CD_CLIENTE INT NOT NULL AUTO_INCREMENT,
+    NM_CLIENTE VARCHAR(255) NOT NULL,
+    DS_EMAIL VARCHAR(255) NULL,
+    PC_DESCONTO DOUBLE NOT NULL,
+    DS_CPF VARCHAR(255) NOT NULL,
+    PRIMARY KEY(CD_CLIENTE)
+);
