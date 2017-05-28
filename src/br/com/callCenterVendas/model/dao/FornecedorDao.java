@@ -45,7 +45,7 @@ public class FornecedorDao {
 		statement.execute();		
 	}
 
-	public Fornecedor getFornecedorId(Integer codFornecedor) throws ValidacaoException,SQLException,ClassNotFoundException {
+	public Fornecedor getFornecedorId(Integer codFornecedor) throws IllegalArgumentException,SQLException,ClassNotFoundException {
 		Connection conexao = ConexaoJDBCFactory.getConexao();
 		PreparedStatement ps = conexao.prepareStatement("SELECT CD_FORNECEDOR,NM_FORNECEDOR,"
 				+ "DS_RAZAO_SOCIAL,DS_EMAIL,DS_CNPJ FROM TB_FORNECEDOR WHERE CD_FORNECEDOR = ?");
@@ -55,10 +55,10 @@ public class FornecedorDao {
 			return new Fornecedor(rs.getInt(1),rs.getString(4),
 					rs.getString(2),rs.getString(3),rs.getString(5));
 		}
-		throw new ValidacaoException("Nao achou fornecedor para o codigo "+codFornecedor);
+		throw new IllegalArgumentException("Nao achou fornecedor para o codigo "+codFornecedor);
 	}
 
-	public void atualizar(Fornecedor fornecedor) throws ValidacaoException,SQLException,ClassNotFoundException {
+	public void atualizar(Fornecedor fornecedor) throws SQLException,ClassNotFoundException {
 		Connection conexao = ConexaoJDBCFactory.getConexao();
 		PreparedStatement statement = conexao.prepareStatement(
 				"UPDATE TB_FORNECEDOR SET NM_FORNECEDOR =?,DS_RAZAO_SOCIAL = ?,DS_CNPJ = ?,"

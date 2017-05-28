@@ -9,6 +9,7 @@
 </head>
 <body>
 	<form method="POST" action="fornecedorServlet">
+		 <input type="hidden" name="acao" value="CREATE"/>
 		 <input type="hidden" name="codigo" value="${fornecedor.codigo}"/>
 	     Codigo <input type="text" disabled name="codigo" value="${fornecedor.codigo}"/> <br>
 	     Nome Fantasia <input type="text" name="nome" value="${fornecedor.nome}"/> <br>
@@ -38,8 +39,8 @@
 			<td>${f.razaoSocial}</td>
 			<td>${f.cnpj}</td>
 			<td>${f.email}</td>
-			<td><a href=fornecedorServlet?acao=editar&codigo=${f.codigo}>Editar</a>
-			<td><a href=fornecedorServlet?acao=excluir&codigo=${f.codigo}>Excluir</a>
+			<td><a href=fornecedorServlet?acao=RETRIEVE&codigo=${f.codigo}>Editar</a>
+			<td><a href=fornecedorServlet?acao=DELETE&codigo=${f.codigo}>Excluir</a>
 		</tr>	
 		</c:forEach>	
 	</table>

@@ -9,6 +9,7 @@
 </head>
 <body>
 	<form method="POST" action="clienteServlet">
+		 <input type="hidden" name="acao" value="CREATE"/>
 		 <input type="hidden" name="codigo" value="${cliente.codigo}"/>
 	     Codigo <input type="text" disabled name="codigo" value="${cliente.codigo}"/> <br>
 	     Nome <input type="text" name="nome" value="${cliente.nome}"/> <br>
@@ -38,8 +39,8 @@
 			<td>${f.percentualDesconto}</td>
 			<td>${f.cpf}</td>
 			<td>${f.email}</td>
-			<td><a href=clienteServlet?acao=editar&codigo=${f.codigo}>Editar</a>
-			<td><a href=clienteServlet?acao=excluir&codigo=${f.codigo}>Excluir</a>
+			<td><a href=clienteServlet?acao=RETRIEVE&codigo=${f.codigo}>Editar</a>
+			<td><a href=clienteServlet?acao=DELETE&codigo=${f.codigo}>Excluir</a>
 		</tr>	
 		</c:forEach>	
 	</table>

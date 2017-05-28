@@ -23,53 +23,52 @@ public class ClienteServlet extends HttpServlet {
 	private ClienteDao clienteDao = new ClienteDao();
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public ClienteServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String acao = request.getParameter("acao");
-		String codigo = request.getParameter("codigo");
+		// CRUD - CREATE RETRIEVE UPDATE DELETE
 		try {
-			if (acao != null && acao.equals("excluir")) {
-				Integer codCliente = Integer.parseInt(codigo);
-				clienteDao.excluir(codCliente);
-				request.setAttribute("mensagem", "Cliente excluido");
-			} else if (acao != null && acao.equals("editar")) {
-				Integer codCliente = Integer.parseInt(codigo);
-				Cliente cliente = clienteDao.getClienteId(codCliente);
-				request.setAttribute("cliente",cliente);
+			String acao = request.getParameter("acao");
+			if (acao != null) {
+				if (acao.equals("CREATE")) {
+					Cliente cliente = criaCliente(request);
+					try {
+						cliente.valida();
+					} catch (ValidacaoException e) {
+						request.setAttribute("mensagem", "Erro de Validacao dos Campos: " + e.getMessage());
+						request.setAttribute("cliente", cliente);
+					}
+					if (cliente.getCodigo() == null) {
+						clienteDao.salvar(cliente);
+						request.setAttribute("mensagem", "Cliente salvo com sucesso");
+					} else {
+						clienteDao.atualizar(cliente);
+						request.setAttribute("mensagem", "Cliente atualizado com sucesso");
+					}
+				} else if (acao.equals("RETRIEVE")) {
+					String codigo = request.getParameter("codigo");
+					Integer codCliente = Integer.parseInt(codigo);
+					Cliente cliente = clienteDao.getClienteId(codCliente);
+					request.setAttribute("cliente", cliente);
+	
+				} else if (acao.equals("DELETE")) {
+					String codigo = request.getParameter("codigo");
+					Integer codCliente = Integer.parseInt(codigo);
+					clienteDao.excluir(codCliente);
+					request.setAttribute("mensagem", "Cliente excluido");
+				}
 			}
 			request.setAttribute("clientes", clienteDao.getClientes());
-		} catch (SQLException e) {
-			request.setAttribute("mensagem", "Erro de Banco de Dados: " + e.getMessage());
-		} catch (ClassNotFoundException e) {
-			request.setAttribute("mensagem", "Erro de Driver: " + e.getMessage());
-		} catch (ValidacaoException e) {
-			request.setAttribute("mensagem", "Erro de Driver: " + e.getMessage());
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/paginas/clientes.jsp");
+			dispatcher.forward(request, response);
+		} catch (SQLException | ClassNotFoundException | IllegalArgumentException e) {
+			request.setAttribute("mensagem", "Erro: " + e.getMessage());
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/paginas/erro.jsp");
+			dispatcher.forward(request, response);
 		}
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/paginas/clientes.jsp");
-		dispatcher.forward(request, response);
-
-		// PrintWriter pw = response.getWriter();
-		// pw.write("<html><body>"+clientees.toString()+"</body></html>");
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	private Cliente criaCliente(HttpServletRequest request) {
 		String nome = request.getParameter("nome");
 		String percentualDesconto = request.getParameter("percentualDesconto");
 		String email = request.getParameter("email");
@@ -83,36 +82,7 @@ public class ClienteServlet extends HttpServlet {
 		if (codigo != null && !codigo.equals("")) {
 			cliente.setCodigo(Integer.parseInt(codigo));
 		}
-		try {
-			cliente.valida();
-			if (cliente.getCodigo() != null) {
-				clienteDao.atualizar(cliente);
-				request.setAttribute("mensagem", "Cliente atualizado com sucesso");				
-			} else {
-				clienteDao.salvar(cliente);
-				request.setAttribute("mensagem", "Cliente salvo com sucesso");
-			}						
-		} catch (ValidacaoException e) {
-			request.setAttribute("mensagem", "Erro de Validacao dos Campos: " + e.getMessage());
-			request.setAttribute("cliente",cliente);
-		} catch (SQLException e) {
-			request.setAttribute("mensagem", "Erro de Banco de Dados: " + e.getMessage());
-			request.setAttribute("cliente",cliente);
-		} catch (ClassNotFoundException e) {
-			request.setAttribute("mensagem", "Erro de Driver: " + e.getMessage());
-			request.setAttribute("cliente",cliente);
-		} 
-		try {
-			request.setAttribute("clientes", clienteDao.getClientes());
-		} catch (SQLException e) {
-			request.setAttribute("mensagem", "Erro de Banco de Dados: " + e.getMessage());
-			request.setAttribute("cliente",cliente);
-		} catch (ClassNotFoundException e) {
-			request.setAttribute("mensagem", "Erro de Driver: " + e.getMessage());
-			request.setAttribute("cliente",cliente);
-		} 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/paginas/clientes.jsp");
-		dispatcher.forward(request, response);
+		return cliente;
 	}
 
 }

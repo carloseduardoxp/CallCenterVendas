@@ -45,7 +45,7 @@ public class ClienteDao {
 		statement.execute();		
 	}
 
-	public Cliente getClienteId(Integer codCliente) throws ValidacaoException,SQLException,ClassNotFoundException {
+	public Cliente getClienteId(Integer codCliente) throws IllegalArgumentException,SQLException,ClassNotFoundException {
 		Connection conexao = ConexaoJDBCFactory.getConexao();
 		PreparedStatement ps = conexao.prepareStatement("SELECT CD_CLIENTE,NM_CLIENTE,"
 				+ "DS_EMAIL,DS_CPF,PC_DESCONTO FROM TB_CLIENTE");
@@ -54,10 +54,10 @@ public class ClienteDao {
 			return new Cliente(rs.getInt(1),rs.getString(3),
 					rs.getString(2),rs.getDouble(5),rs.getString(4));
 		}
-		throw new ValidacaoException("Nao achou cliente para o codigo "+codCliente);
+		throw new IllegalArgumentException("Nao achou cliente para o codigo "+codCliente);
 	}
 
-	public void atualizar(Cliente cliente) throws ValidacaoException,SQLException,ClassNotFoundException {
+	public void atualizar(Cliente cliente) throws SQLException,ClassNotFoundException {
 		Connection conexao = ConexaoJDBCFactory.getConexao();
 		PreparedStatement statement = conexao.prepareStatement(
 				"UPDATE TB_CLIENTE SET NM_CLIENTE =?,PC_DESCONTO = ?,DS_CPF = ?,"
